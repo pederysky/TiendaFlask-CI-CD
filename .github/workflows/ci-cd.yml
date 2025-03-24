@@ -29,12 +29,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r flask_tienda/requirements.txt
 
-      # Paso 4: Listar paquetes instalados (opcional para depuración)
+      # Paso 4: Listar paquetes instalados
       - name: List installed packages
         run: pip list
 
-      # Paso 5: Establecer PYTHONPATH y ejecutar las pruebas
+      # Paso 5: Verificar los archivos en el directorio
+      - name: Verify files in project directory
+        run: |
+          echo "Listando los archivos del proyecto:"
+          ls -R
+
+      # Paso 6: Establecer PYTHONPATH y ejecutar las pruebas
       - name: Run tests
         run: |
           export PYTHONPATH=$(pwd)/flask_tienda
-          pytest  # Ejecutar pytest después de que se haya instalado pytest
+          pytest --maxfail=1 --disable-warnings -v  # Ejecutar pytest con más detalles de depuración
+
