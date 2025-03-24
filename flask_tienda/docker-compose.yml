@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: pedro
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: basededatos
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  custom_service:
+    build:
+      context: ./
+      dockerfile: dockerfiles/Dockerfile
+    container_name: custom_service
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_USER: pedro
+      DATABASE_PASSWORD: 1234
+      DATABASE_NAME: basededatos
+    ports:
+      - "5000:5000"
+
+volumes:
+  postgres_data:
+
+
+
