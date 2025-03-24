@@ -12,6 +12,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U user"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       # Paso 1: Hacer checkout del repositorio
       - name: Checkout repository
@@ -39,7 +54,12 @@ jobs:
           echo "Listando los archivos del proyecto:"
           ls -R
 
-      # Paso 6: Establecer PYTHONPATH y ejecutar las pruebas
+      # Paso 6: Establecer variables de entorno para la base de datos
+      - name: Set up database environment variables
+        run: |
+          echo "SQLALCHEMY_DATABASE_URI=postgresql://user:password@localhost:5432/testdb" >> $GITHUB_ENV
+
+      # Paso 7: Establecer PYTHONPATH y ejecutar las pruebas
       - name: Run tests
         run: |
           export PYTHONPATH=$(pwd)/flask_tienda
