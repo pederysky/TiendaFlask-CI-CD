@@ -16,13 +16,13 @@ jobs:
       postgres:
         image: postgres:13
         env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: testdb
+          POSTGRES_USER: pedro
+          POSTGRES_PASSWORD: 1234
+          POSTGRES_DB: basededatos
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U user"
+          --health-cmd="pg_isready -U pedro"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -57,11 +57,10 @@ jobs:
       # Paso 6: Establecer variables de entorno para la base de datos
       - name: Set up database environment variables
         run: |
-          echo "SQLALCHEMY_DATABASE_URI=postgresql://user:password@localhost:5432/testdb" >> $GITHUB_ENV
+          echo "SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://pedro:1234@postgres:5432/basededatos" >> $GITHUB_ENV
 
       # Paso 7: Establecer PYTHONPATH y ejecutar las pruebas
       - name: Run tests
         run: |
           export PYTHONPATH=$(pwd)/flask_tienda
           pytest --maxfail=1 --disable-warnings -v  # Ejecutar pytest con más detalles de depuración
-
